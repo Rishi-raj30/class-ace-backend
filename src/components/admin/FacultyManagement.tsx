@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { FacultyDialog } from './FacultyDialog';
 
 export const FacultyManagement = () => {
   const [faculty, setFaculty] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedFaculty, setSelectedFaculty] = useState<any>();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -49,11 +52,22 @@ export const FacultyManagement = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-white">Faculty Management</h2>
         <Button
+          onClick={() => {
+            setSelectedFaculty(undefined);
+            setDialogOpen(true);
+          }}
           className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         >
           Add Faculty
         </Button>
       </div>
+
+      <FacultyDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        faculty={selectedFaculty}
+        onSuccess={fetchFaculty}
+      />
 
       <div className="card-dark rounded-2xl p-8">
         <div className="space-y-4">
@@ -88,6 +102,10 @@ export const FacultyManagement = () => {
                     variant="outline"
                     size="sm"
                     className="border-gray-600 text-gray-300 hover:text-white"
+                    onClick={() => {
+                      setSelectedFaculty(member);
+                      setDialogOpen(true);
+                    }}
                   >
                     Edit
                   </Button>

@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { DepartmentDialog } from './DepartmentDialog';
 
 export const DepartmentManagement = () => {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedDept, setSelectedDept] = useState<any>();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -45,11 +48,22 @@ export const DepartmentManagement = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-white">Department Management</h2>
         <Button
+          onClick={() => {
+            setSelectedDept(undefined);
+            setDialogOpen(true);
+          }}
           className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         >
           Add Department
         </Button>
       </div>
+
+      <DepartmentDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        department={selectedDept}
+        onSuccess={fetchDepartments}
+      />
 
       <div className="card-dark rounded-2xl p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -68,6 +82,10 @@ export const DepartmentManagement = () => {
                     variant="outline"
                     size="sm"
                     className="border-gray-600 text-gray-300 hover:text-white"
+                    onClick={() => {
+                      setSelectedDept(dept);
+                      setDialogOpen(true);
+                    }}
                   >
                     Edit
                   </Button>

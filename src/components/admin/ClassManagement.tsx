@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { ClassDialog } from './ClassDialog';
 
 export const ClassManagement = () => {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedClass, setSelectedClass] = useState<any>();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -48,11 +51,22 @@ export const ClassManagement = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-white">Class Management</h2>
         <Button
+          onClick={() => {
+            setSelectedClass(undefined);
+            setDialogOpen(true);
+          }}
           className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         >
           Add Class
         </Button>
       </div>
+
+      <ClassDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        classData={selectedClass}
+        onSuccess={fetchClasses}
+      />
 
       <div className="card-dark rounded-2xl p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -71,6 +85,10 @@ export const ClassManagement = () => {
                     variant="outline"
                     size="sm"
                     className="border-gray-600 text-gray-300 hover:text-white"
+                    onClick={() => {
+                      setSelectedClass(cls);
+                      setDialogOpen(true);
+                    }}
                   >
                     Edit
                   </Button>

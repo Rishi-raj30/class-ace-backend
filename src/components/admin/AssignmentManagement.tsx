@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { AssignmentDialog } from './AssignmentDialog';
 
 export const AssignmentManagement = () => {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState<any>();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -49,11 +52,22 @@ export const AssignmentManagement = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-white">Assignment Management</h2>
         <Button
+          onClick={() => {
+            setSelectedAssignment(undefined);
+            setDialogOpen(true);
+          }}
           className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         >
           Add Assignment
         </Button>
       </div>
+
+      <AssignmentDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        assignment={selectedAssignment}
+        onSuccess={fetchAssignments}
+      />
 
       <div className="card-dark rounded-2xl p-8">
         <div className="space-y-4">
@@ -95,6 +109,10 @@ export const AssignmentManagement = () => {
                       variant="outline"
                       size="sm"
                       className="border-gray-600 text-gray-300 hover:text-white"
+                      onClick={() => {
+                        setSelectedAssignment(assignment);
+                        setDialogOpen(true);
+                      }}
                     >
                       Edit
                     </Button>

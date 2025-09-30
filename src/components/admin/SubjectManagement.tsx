@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { SubjectDialog } from './SubjectDialog';
 
 export const SubjectManagement = () => {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedSubject, setSelectedSubject] = useState<any>();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -48,11 +51,22 @@ export const SubjectManagement = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-white">Subject Management</h2>
         <Button
+          onClick={() => {
+            setSelectedSubject(undefined);
+            setDialogOpen(true);
+          }}
           className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         >
           Add Subject
         </Button>
       </div>
+
+      <SubjectDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        subject={selectedSubject}
+        onSuccess={fetchSubjects}
+      />
 
       <div className="card-dark rounded-2xl p-8">
         <div className="space-y-4">
@@ -78,6 +92,10 @@ export const SubjectManagement = () => {
                   variant="outline"
                   size="sm"
                   className="border-gray-600 text-gray-300 hover:text-white"
+                  onClick={() => {
+                    setSelectedSubject(subject);
+                    setDialogOpen(true);
+                  }}
                 >
                   Edit
                 </Button>

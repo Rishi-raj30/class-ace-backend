@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { TimetableDialog } from './TimetableDialog';
 
 export const TimetableManagement = () => {
   const [timetable, setTimetable] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedSchedule, setSelectedSchedule] = useState<any>();
   const { toast } = useToast();
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -56,11 +59,22 @@ export const TimetableManagement = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-white">Timetable Management</h2>
         <Button
+          onClick={() => {
+            setSelectedSchedule(undefined);
+            setDialogOpen(true);
+          }}
           className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         >
           Add Schedule
         </Button>
       </div>
+
+      <TimetableDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        schedule={selectedSchedule}
+        onSuccess={fetchTimetable}
+      />
 
       <div className="card-dark rounded-2xl p-8">
         {timetable.length === 0 ? (
@@ -90,6 +104,10 @@ export const TimetableManagement = () => {
                               variant="outline"
                               size="sm"
                               className="border-gray-600 text-gray-300 hover:text-white text-xs"
+                              onClick={() => {
+                                setSelectedSchedule(schedule);
+                                setDialogOpen(true);
+                              }}
                             >
                               Edit
                             </Button>

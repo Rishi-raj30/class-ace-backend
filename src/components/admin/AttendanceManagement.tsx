@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { AttendanceDialog } from './AttendanceDialog';
 
 export const AttendanceManagement = () => {
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedAttendance, setSelectedAttendance] = useState<any>();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -54,11 +57,22 @@ export const AttendanceManagement = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-white">Attendance Management</h2>
         <Button
+          onClick={() => {
+            setSelectedAttendance(undefined);
+            setDialogOpen(true);
+          }}
           className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         >
           Mark Attendance
         </Button>
       </div>
+
+      <AttendanceDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        attendance={selectedAttendance}
+        onSuccess={fetchAttendance}
+      />
 
       <div className="card-dark rounded-2xl p-8">
         <div className="space-y-4">
@@ -96,6 +110,10 @@ export const AttendanceManagement = () => {
                     variant="outline"
                     size="sm"
                     className="border-gray-600 text-gray-300 hover:text-white"
+                    onClick={() => {
+                      setSelectedAttendance(record);
+                      setDialogOpen(true);
+                    }}
                   >
                     Edit
                   </Button>

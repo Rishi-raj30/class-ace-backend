@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FacultyLoginModal } from '@/components/auth/FacultyLoginModal';
 import { StudentLoginModal } from '@/components/auth/StudentLoginModal';
+import { AdminLoginModal } from '@/components/auth/AdminLoginModal';
 import { FloatingOrbs } from '@/components/ui/FloatingOrbs';
 
 const Index = () => {
   const [showFacultyLogin, setShowFacultyLogin] = useState(false);
   const [showStudentLogin, setShowStudentLogin] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
 
   useEffect(() => {
@@ -45,7 +47,26 @@ const Index = () => {
           </div>
 
           {/* Login Options */}
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            {/* Admin Login */}
+            <button
+              onClick={() => setShowAdminLogin(true)}
+              className="group p-8 glass-card rounded-2xl hover-lift border border-white/10 transition-all duration-300"
+            >
+              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                🔐
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">Admin Portal</h3>
+              <p className="text-white/70">
+                Manage users, departments, classes, and system configuration
+              </p>
+              <div className="mt-6">
+                <span className="btn-primary px-8 py-3 rounded-xl font-semibold text-white inline-block">
+                  Admin Login
+                </span>
+              </div>
+            </button>
+
             {/* Faculty Login */}
             <button
               onClick={() => setShowFacultyLogin(true)}
@@ -108,6 +129,10 @@ const Index = () => {
       </div>
 
       {/* Modals */}
+      <AdminLoginModal 
+        isOpen={showAdminLogin} 
+        onClose={() => setShowAdminLogin(false)} 
+      />
       <FacultyLoginModal 
         isOpen={showFacultyLogin} 
         onClose={() => setShowFacultyLogin(false)} 

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { StudentDialog } from './StudentDialog';
 
 interface Student {
   id: string;
@@ -25,7 +24,8 @@ interface Student {
 export const StudentManagement = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<Student | undefined>();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -69,12 +69,22 @@ export const StudentManagement = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-white">Student Management</h2>
         <Button
-          onClick={() => setShowAddModal(true)}
+          onClick={() => {
+            setSelectedStudent(undefined);
+            setDialogOpen(true);
+          }}
           className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         >
           Add Student
         </Button>
       </div>
+
+      <StudentDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        student={selectedStudent}
+        onSuccess={fetchStudents}
+      />
 
       <div className="card-dark rounded-2xl p-8">
         <div className="space-y-4">
@@ -109,6 +119,10 @@ export const StudentManagement = () => {
                     variant="outline"
                     size="sm"
                     className="border-gray-600 text-gray-300 hover:text-white"
+                    onClick={() => {
+                      setSelectedStudent(student);
+                      setDialogOpen(true);
+                    }}
                   >
                     Edit
                   </Button>
